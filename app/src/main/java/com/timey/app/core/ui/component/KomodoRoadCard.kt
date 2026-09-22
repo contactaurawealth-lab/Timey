@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,14 +29,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.timey.app.core.ui.theme.EmeraldDragon
-import com.timey.app.core.ui.theme.FieryAmber
-import com.timey.app.core.ui.theme.FieryOrange
-import com.timey.app.core.ui.theme.KomodoBorder
-import com.timey.app.core.ui.theme.KomodoSurface
-import com.timey.app.core.ui.theme.KomodoSurfaceVariant
-import com.timey.app.core.ui.theme.TextMuted
-import com.timey.app.core.ui.theme.TextWhite
 import com.timey.app.features.timer.viewmodel.CompanionState
 
 @Composable
@@ -43,6 +36,8 @@ fun KomodoRoadCard(
     companion: CompanionState,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.colorScheme
+
     val animatedProgress by animateFloatAsState(
         targetValue = companion.roadProgressPercent.coerceIn(0f, 1f),
         label = "RoadProgress"
@@ -51,10 +46,10 @@ fun KomodoRoadCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(KomodoSurface)
-            .border(1.dp, KomodoBorder, RoundedCornerShape(20.dp))
-            .padding(16.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(colors.surface)
+            .border(1.dp, colors.outline.copy(alpha = 0.35f), RoundedCornerShape(18.dp))
+            .padding(14.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
@@ -66,41 +61,43 @@ fun KomodoRoadCard(
                     // Dragon Avatar Badge
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(40.dp)
                             .clip(CircleShape)
                             .background(
-                                Brush.linearGradient(listOf(EmeraldDragon, FieryAmber))
+                                Brush.linearGradient(
+                                    listOf(colors.primary, colors.secondary)
+                                )
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "🐉",
-                            fontSize = 22.sp
+                            fontSize = 20.sp
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
 
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "Lv. ${companion.level}",
-                                color = EmeraldDragon,
+                                color = colors.primary,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
+                                fontSize = 15.sp
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = companion.title,
-                                color = TextWhite,
+                                color = colors.onSurface,
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 15.sp
+                                fontSize = 14.sp
                             )
                         }
                         Text(
-                            text = "${companion.totalXp} XP on Komodo Road",
-                            color = TextMuted,
-                            fontSize = 12.sp
+                            text = "${companion.totalXp} XP on Focus Road",
+                            color = colors.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
                 }
@@ -109,27 +106,27 @@ fun KomodoRoadCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(KomodoSurfaceVariant)
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.surfaceVariant.copy(alpha = 0.7f))
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.LocalFireDepartment,
                         contentDescription = "Streak",
-                        tint = FieryOrange,
-                        modifier = Modifier.size(18.dp)
+                        tint = colors.secondary,
+                        modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${companion.streakDays}d streak",
-                        color = TextWhite,
+                        color = colors.onSurface,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
+                        fontSize = 11.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Road Progress Bar
             Column {
@@ -138,33 +135,33 @@ fun KomodoRoadCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Next milestone",
-                        color = TextMuted,
-                        fontSize = 11.sp
+                        text = "Road milestone",
+                        color = colors.onSurfaceVariant,
+                        fontSize = 10.sp
                     )
                     Text(
                         text = "${(companion.roadProgressPercent * 100).toInt()}%",
-                        color = EmeraldDragon,
+                        color = colors.primary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp
+                        fontSize = 10.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(KomodoSurfaceVariant)
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(colors.surfaceVariant)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(animatedProgress)
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp))
                             .background(
                                 Brush.horizontalGradient(
-                                    listOf(EmeraldDragon, FieryAmber)
+                                    listOf(colors.primary, colors.secondary)
                                 )
                             )
                     )

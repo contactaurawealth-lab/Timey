@@ -4,9 +4,14 @@ import android.content.Context
 import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
+import com.timey.app.core.alarm.AlarmSoundSynthesizer
+import com.timey.app.core.alarm.CustomAudioStorage
 import com.timey.app.core.alarm.ExactAlarmScheduler
 import com.timey.app.core.service.FocusForegroundService
+import com.timey.app.domain.model.AlarmSound
 import com.timey.app.domain.model.PomodoroPhase
+import com.timey.app.domain.model.ThemeMode
 import com.timey.app.domain.model.TimerMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -53,7 +58,15 @@ data class TimerUiState(
     val sessionTopic: String = "Calculus & Integrals",
     val companion: CompanionState = CompanionState(),
     val showRetrospectiveDialog: Boolean = false,
-    val lastCompletedMinutes: Int = 0
+    val lastCompletedMinutes: Int = 0,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val alarmSound: AlarmSound = AlarmSound.ZEN_BELL,
+    val alarmVolume: Float = 0.85f,
+    val isPreviewingAlarm: Boolean = false,
+    val showCustomAlarmDialog: Boolean = false,
+    val showCustomDurationDialog: Boolean = false,
+    val customAudioTitle: String? = null,
+    val hasCustomAudio: Boolean = false
 )
 
 class TimerViewModel(
@@ -83,6 +96,18 @@ class TimerViewModel(
                         )
                     }
                 }
+            }
+        }
+
+        // Load existing custom audio if previously imported
+        val storedTitle = CustomAudioStorage.getStoredCustomAudioTitle(context)
+        val storedFile = CustomAudioStorage.getStoredCustomAudioFile(context)
+        if (storedTitle != null && storedFile != null) {
+            _uiState.update {
+                it.copy(
+                    customAudioTitle = storedTitle,
+                    hasCustomAudio = true
+                )
             }
         }
     }
@@ -254,6 +279,7 @@ class TimerViewModel(
         val completedMinutes = (state.totalDurationSeconds / 60).coerceAtLeast(1)
 
         awardCompanionXp(completedMinutes)
+        AlarmSoundSynthesizer.playAlarmSound(context, state.alarmSound, state.alarmVolume)
 
         if (state.mode == TimerMode.POMODORO) {
             if (state.pomodoroPhase == PomodoroPhase.FOCUS) {
@@ -380,6 +406,67 @@ class TimerViewModel(
 
     fun setSubjectAndTopic(subject: String, topic: String) {
         _uiState.update { it.copy(sessionSubject = subject, sessionTopic = topic) }
+    }
+
+    fun setThemeMode(mode: ThemeMode) {
+        _uiState.update { it.copy(themeMode = mode) }
+    }
+
+    fun cycleThemeMode() {
+        val next = when (_uiState.value.themeMode) {
+            ThemeMode.SYSTEM -> ThemeMode.LIGHT
+            ThemeMode.LIGHT -> ThemeMode.DARK
+            ThemeMode.DARK -> ThemeMode.SYSTEM
+        }
+        _uiState.update { it.copy(themeMode = next) }
+    }
+
+    fun setAlarmSound(sound: AlarmSound) {
+        _uiState.update { it.copy(alarmSound = sound) }
+        previewAlarmSound(sound)
+    }
+
+    fun previewAlarmSound(sound: AlarmSound) {
+        _uiState.update { it.copy(isPreviewingAlarm = true) }
+        AlarmSoundSynthesizer.playAlarmSound(context, sound, _uiState.value.alarmVolume)
+    }
+
+    fun stopAlarmPreview() {
+        AlarmSoundSynthesizer.stop()
+        _uiState.update { it.copy(isPreviewingAlarm = false) }
+    }
+
+    fun setAlarmVolume(volume: Float) {
+        _uiState.update { it.copy(alarmVolume = volume.coerceIn(0f, 1f)) }
+    }
+
+    fun toggleCustomAlarmDialog(show: Boolean) {
+        if (!show) stopAlarmPreview()
+        _uiState.update { it.copy(showCustomAlarmDialog = show) }
+    }
+
+    fun toggleCustomDurationDialog(show: Boolean) {
+        _uiState.update { it.copy(showCustomDurationDialog = show) }
+    }
+
+    fun setCustomDurationMinutes(minutes: Int) {
+        setDurationMinutes(minutes.coerceIn(1, 360))
+        toggleCustomDurationDialog(false)
+    }
+
+    fun importCustomAudio(uri: Uri) {
+        val result = CustomAudioStorage.importAudioUri(context, uri)
+        if (result != null) {
+            val (_, title) = result
+            _uiState.update {
+                it.copy(
+                    alarmSound = AlarmSound.CUSTOM_USER_AUDIO,
+                    customAudioTitle = title,
+                    hasCustomAudio = true
+                )
+            }
+            previewAlarmSound(AlarmSound.CUSTOM_USER_AUDIO)
+        }
     }
 
     override fun onCleared() {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,47 +19,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.timey.app.core.ui.theme.EmeraldDragon
-import com.timey.app.core.ui.theme.EmeraldLight
-import com.timey.app.core.ui.theme.FieryAmber
-import com.timey.app.core.ui.theme.FieryOrange
-import com.timey.app.core.ui.theme.KomodoSurfaceVariant
 
 @Composable
 fun CircularTimerRing(
     progress: Float,
     isFocusMode: Boolean,
     isRunning: Boolean,
-    size: Dp = 270.dp,
-    strokeWidth: Dp = 14.dp,
+    size: Dp = 250.dp,
+    strokeWidth: Dp = 12.dp,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val colors = MaterialTheme.colorScheme
+
     val animatedProgress by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
         animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
         label = "RingProgress"
     )
 
-    // Breathing pulse for focus state
+    // Subtle breathing pulse for focus state
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransition")
     val pulseGlow by infiniteTransition.animateFloat(
-        initialValue = 0.85f,
-        targetValue = if (isRunning) 1.15f else 0.85f,
+        initialValue = 0.92f,
+        targetValue = if (isRunning) 1.08f else 0.92f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2400, easing = FastOutSlowInEasing),
+            animation = tween(2200, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "PulseGlow"
     )
 
-    val primaryColor = if (isFocusMode) EmeraldDragon else FieryAmber
-    val secondaryColor = if (isFocusMode) EmeraldLight else FieryOrange
+    val primaryColor = if (isFocusMode) colors.primary else colors.secondary
+    val secondaryColor = if (isFocusMode) colors.tertiary else colors.primary
 
     Box(
         modifier = modifier.size(size),
@@ -71,9 +68,9 @@ fun CircularTimerRing(
             val arcSize = Size(radius * 2, radius * 2)
             val topLeft = Offset(center.x - radius, center.y - radius)
 
-            // Background Track
+            // Background Track (Soft subtle outline)
             drawArc(
-                color = KomodoSurfaceVariant,
+                color = colors.surfaceVariant.copy(alpha = 0.6f),
                 startAngle = 0f,
                 sweepAngle = 360f,
                 useCenter = false,
@@ -87,7 +84,7 @@ fun CircularTimerRing(
                 drawArc(
                     brush = Brush.sweepGradient(
                         0.0f to primaryColor,
-                        0.8f to secondaryColor,
+                        0.7f to secondaryColor,
                         1.0f to primaryColor,
                         center = center
                     ),
@@ -101,7 +98,7 @@ fun CircularTimerRing(
             }
         }
 
-        // Center Content (Time text + controls)
+        // Center Content (Time text + session labels)
         content()
     }
 }

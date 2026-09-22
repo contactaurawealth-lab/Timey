@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.timey.app.core.ui.theme.TimeyTheme
 import com.timey.app.features.timer.ui.TimerMainScreen
 import com.timey.app.features.timer.viewmodel.TimerViewModel
@@ -45,7 +47,8 @@ class MainActivity : ComponentActivity() {
         checkNotificationPermission()
 
         setContent {
-            TimeyTheme {
+            val uiState by viewModel.uiState.collectAsState()
+            TimeyTheme(themeMode = uiState.themeMode) {
                 TimerMainScreen(viewModel = viewModel)
             }
         }
