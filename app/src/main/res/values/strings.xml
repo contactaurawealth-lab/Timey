@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Timey</string>
+    <string name="quick_tile_label">Timey Focus</string>
+    <string name="quick_tile_desc">Toggle Pomodoro study session</string>
+</resources>
