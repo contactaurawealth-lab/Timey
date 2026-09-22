@@ -1,4 +1,8 @@
-# 🐉 Timey: Gamified Study Timer & Precision Alarm
+# ⏱️ Timey: Gamified Study Timer & Precision Alarm
+
+<p align="center">
+  <img src="timey_icon_1024.png" width="128" height="128" alt="Timey Logo" style="border-radius: 28px;">
+</p>
 
 > **The Ultimate Pomodoro, Ultradian & Flow Companion for Android**  
 > Built with Kotlin 2.0, Jetpack Compose, Material 3, and a high-precision Java AlarmManager bridge. Zero background freezes, zero drift, and 100% offline.
