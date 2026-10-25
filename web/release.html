@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timey v1.1.0 Release | Native Android Focus & Study Timer</title>
+  <meta name="description" content="Release notes and direct APK download for Timey v1.1.0 — featuring 135:15 Deep Work, App Blocking, Fullscreen Focus, Room Analytics, Offline Soundscapes & Custom Ringtones.">
+  <link rel="icon" type="image/png" href="/timey_logo.png">
+  <meta property="og:image" content="https://timey-focus.vercel.app/timey_logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#0A0F0D',
+            surface: '#131B18',
+            surfaceVar: '#1C2823',
+            dragon: '#10B981',
+            dragonLight: '#34D399',
+            fiery: '#F59E0B',
+            fieryOrange: '#EA580C',
+            cyanFocus: '#06B6D4'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0A0F0D;
+      color: #F9FAFB;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .glass {
+      background: rgba(19, 27, 24, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(52, 211, 153, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-dragon selection:text-obsidian">
+
+  <!-- Navigation -->
+  <header class="w-full border-b border-surfaceVar/80 sticky top-0 z-50 glass">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="/timey_logo.png" alt="Timey Logo" class="w-11 h-11 rounded-2xl shadow-lg shadow-cyanFocus/20 object-cover border border-cyanFocus/30">
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-white">Timey</span>
+          <span class="text-xs ml-1.5 px-2 py-0.5 rounded-full bg-cyanFocus/10 text-cyanFocus font-semibold border border-cyanFocus/30">v1.1.0 Stable</span>
+        </div>
+      </a>
+
+      <div class="flex items-center space-x-4">
+        <a href="/" class="text-sm font-medium text-gray-400 hover:text-white transition">Home</a>
+        <a href="/downloads/Timey-v1.1.0.apk" download
+           class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-dragon to-emerald-400 text-obsidian font-bold text-sm hover:opacity-95 transition shadow-lg shadow-dragon/25 flex items-center space-x-2">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          <span>Download APK (v1.1.0)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-4xl mx-auto px-6 py-14">
+    <!-- Header Badge -->
+    <div class="flex items-center space-x-3 mb-6">
+      <span class="px-3 py-1 rounded-full bg-dragon/15 text-dragon text-xs font-bold uppercase tracking-wider border border-dragon/30">
+        Latest Stable Release
+      </span>
+      <span class="text-xs text-gray-400 font-mono">Released: October 2026</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+      Timey Release v1.1.0
+    </h1>
+    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+      A major feature update introducing the 135:15 Deep Work cycle, Accessibility-based Android App Blocker, Fullscreen Immersive Mode, Unkillable Background Operation, Procedural Audio & MP3 player, and Room persistence.
+    </p>
+
+    <!-- Download Card -->
+    <div class="glass p-6 sm:p-8 rounded-2xl mb-12 border border-dragon/20 relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center space-x-2 mb-2">
+            <span class="font-bold text-white text-lg">Timey-v1.1.0.apk</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-surfaceVar text-gray-300 font-mono">12 MB</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold">Signed Release</span>
+          </div>
+          <p class="text-xs text-gray-400 font-mono break-all">
+            SHA-256: <span class="text-dragon">6efd3c85e45b46ed1692d13c24152903f81e7cf8267b773fc82f1b771378bbaa</span>
+          </p>
+          <p class="text-xs text-gray-500 mt-2">
+            Target SDK: Android 8.0 (API 26) through Android 15+ (API 35) • Architecture: Universal (arm64-v8a, armeabi-v7a, x86_64)
+          </p>
+        </div>
+
+        <a href="/downloads/Timey-v1.1.0.apk" download
+           class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-dragon to-emerald-400 text-obsidian font-bold text-base hover:opacity-95 transition shadow-xl shadow-dragon/30 flex items-center justify-center space-x-2 shrink-0">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          <span>Download Release APK</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Highlights Grid -->
+    <h2 class="text-2xl font-bold text-white mb-6 flex items-center space-x-2">
+      <span>🚀</span>
+      <span>What's New in v1.1.0</span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- 135:15 Deep Work -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-dragon/15 text-dragon flex items-center justify-center mb-4 text-xl">
+          ⏱️
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">135:15 Deep Work Study Cycle</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          Engineered for extended technical study, programming, and mathematical research. 135 minutes of immersion followed by a 15-minute recovery interval, with phase-skipping and custom interval sliders.
+        </p>
+      </div>
+
+      <!-- Focus Shield & App Blocker -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-fiery/15 text-fiery flex items-center justify-center mb-4 text-xl">
+          🛡️
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Focus Shield & App Blocker</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          Native AccessibilityService intercept that detects window transitions and displays an inspiring blocker overlay with topic countdown. Supports PIN lock to prevent bypassing and preset distraction lists.
+        </p>
+      </div>
+
+      <!-- Guaranteed Ringing & Zero Background Freeze -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-cyanFocus/15 text-cyanFocus flex items-center justify-center mb-4 text-xl">
+          🔊
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Guaranteed Alarm & Background Resilience</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          New <code class="text-cyanFocus font-mono text-xs">AlarmRingingService</code> plays on <code class="text-cyanFocus font-mono text-xs">USAGE_ALARM</code> stream, overriding notification silence. Service runs as <code class="text-cyanFocus font-mono text-xs">START_STICKY</code> with 8-hour WakeLock and RTC hardware alarm wakeups.
+        </p>
+      </div>
+
+      <!-- Immersive Fullscreen Focus -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4 text-xl">
+          🧘
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Fullscreen Immersive Focus</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          Dedicated distraction-free view utilizing WindowInsetsControllerCompat to hide Android navigation and status bars. Features clean circular ring, ambient quote cycler, and PIN protected exit.
+        </p>
+      </div>
+
+      <!-- Offline Procedural Soundscapes -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 text-xl">
+          🎧
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">7 Procedural Soundscapes & MP3 Player</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          Zero-asset, 100% offline PCM audio generation: Rain & Thunder, Forest Birds, 10Hz Binaural Alpha Waves, Brown Noise, White Noise, Campfire, and Lo-Fi Chill Pulse. Also supports personal MP3 playlist import.
+        </p>
+      </div>
+
+      <!-- Room Analytics & Streaks -->
+      <div class="bg-surface p-6 rounded-2xl border border-surfaceVar">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center mb-4 text-xl">
+          📊
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Room Database Analytics</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          Persistent SQLite logging of every focus session. Includes calendar-accurate streak flames, custom Canvas 7-day weekly bar chart, and subject-wise study time breakdown (Math, CS, Physics, etc.).
+        </p>
+      </div>
+    </div>
+
+    <!-- Detailed Changelog -->
+    <div class="bg-surface p-6 sm:p-8 rounded-2xl border border-surfaceVar mb-12">
+      <h3 class="text-xl font-bold text-white mb-4">Detailed Technical Changelog</h3>
+      <ul class="space-y-3 text-sm text-gray-300">
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Core Timer:</strong> Added <code class="text-dragon font-mono text-xs">DEEP_WORK_135</code> (135 min focus, 15 min break) with custom interval settings.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Controls:</strong> Implemented <code class="text-dragon font-mono text-xs">skipCurrentPhase()</code> in ViewModel and interactive notification actions.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Security:</strong> Accidental session termination confirmation dialog and optional 4-digit PIN password protection.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>App Blocker:</strong> Created <code class="text-dragon font-mono text-xs">FocusAccessibilityBlockerService</code> and full-screen <code class="text-dragon font-mono text-xs">BlockerOverlayActivity</code>.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Background Reliability:</strong> <code class="text-dragon font-mono text-xs">FocusForegroundService</code> converted to <code class="text-dragon font-mono text-xs">START_STICKY</code> with 8-hour WakeLock. Added <code class="text-dragon font-mono text-xs">AlarmRingingService</code> with continuous heads-up alarm.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Database:</strong> Integrated Android Room database (<code class="text-dragon font-mono text-xs">TimeyDatabase</code>, <code class="text-dragon font-mono text-xs">StudySessionDao</code>, <code class="text-dragon font-mono text-xs">StudySessionEntity</code>) and DataStore settings.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Audio & Ringtones:</strong> Built <code class="text-dragon font-mono text-xs">AudioTrackGenerator</code>, <code class="text-dragon font-mono text-xs">MusicPlaylistManager</code>, and custom system ringtones query via <code class="text-dragon font-mono text-xs">RingtoneHelper</code>.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Navigation:</strong> 5-destination bottom navigation bar (<code class="text-dragon font-mono text-xs">MainAppScaffold</code>) connecting Timer, Music, Blocker, Analytics, and Settings.</span>
+        </li>
+        <li class="flex items-start space-x-2">
+          <span class="text-dragon font-bold">✓</span>
+          <span><strong>Testing:</strong> 100% automated test suite passing across Unit, Analytics, Blocker, and Audio generators.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Installation Steps -->
+    <div class="bg-surfaceVar/50 p-6 sm:p-8 rounded-2xl border border-surfaceVar mb-12">
+      <h3 class="text-xl font-bold text-white mb-4">How to Install</h3>
+      <ol class="space-y-4 text-sm text-gray-300 list-decimal list-inside">
+        <li>Tap the <strong>Download Release APK</strong> button above to download <code class="text-dragon font-mono text-xs">Timey-v1.1.0.apk</code>.</li>
+        <li>Open the downloaded APK on your Android device. If prompted, select <em>Settings &gt; Allow from this source</em>.</li>
+        <li>Tap <strong>Install</strong>. Once installed, grant <strong>Notifications</strong>, <strong>Exact Alarms</strong>, and <strong>Accessibility</strong> in the built-in Permission Health Check.</li>
+        <li>Enjoy uninterrupted deep focus, distraction blocking, and offline study soundscapes!</li>
+      </ol>
+    </div>
+
+    <!-- Back to Portal -->
+    <div class="text-center">
+      <a href="/" class="text-sm font-semibold text-dragon hover:underline flex items-center justify-center space-x-2">
+        <span>← Back to Timey Home</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-surfaceVar/60 bg-surface/50 py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+      <p>© 2026 Timey Open-Source Focus Engine. Released under the MIT License.</p>
+      <div class="flex items-center space-x-4">
+        <a href="/" class="hover:text-gray-300 transition">Portal</a>
+        <a href="https://github.com/contactaurawealth-lab/Timey" class="hover:text-gray-300 transition">GitHub</a>
+        <a href="/downloads/Timey-v1.1.0.apk" class="hover:text-gray-300 transition">APK Download</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

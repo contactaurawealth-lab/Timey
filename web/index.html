@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timey 🐉 | The Ultimate Pomodoro & Study Companion for Android</title>
-  <meta name="description" content="Timey is a gamified, precision study timer & alarm app for Android. Features 4 science-backed modes, zero background drift, and the Komodo Road companion.">
+  <title>Timey 🐉 | The Ultimate Focus, 135:15 & Study Companion for Android</title>
+  <meta name="description" content="Timey is a native Android focus timer featuring 135:15 Deep Work cycles, app blocking, guaranteed audible alarms, offline soundscapes, and Room analytics.">
   <link rel="icon" type="image/png" href="/timey_logo.png">
   <meta property="og:image" content="https://timey-focus.vercel.app/timey_logo.png">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -40,12 +40,6 @@
       color: #F9FAFB;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .glow-emerald {
-      box-shadow: 0 0 45px -10px rgba(16, 185, 129, 0.35);
-    }
-    .glow-amber {
-      box-shadow: 0 0 45px -10px rgba(245, 158, 11, 0.35);
-    }
     .glow-cyan {
       box-shadow: 0 0 45px -10px rgba(6, 182, 212, 0.35);
     }
@@ -65,18 +59,18 @@
         <img src="/timey_logo.png" alt="Timey Logo" class="w-11 h-11 rounded-2xl shadow-lg shadow-cyanFocus/20 object-cover border border-cyanFocus/30">
         <div>
           <span class="text-xl font-extrabold tracking-tight text-white">Timey</span>
-          <span class="text-xs ml-1.5 px-2 py-0.5 rounded-full bg-cyanFocus/10 text-cyanFocus font-semibold border border-cyanFocus/30">v1.0.0</span>
+          <span class="text-xs ml-1.5 px-2 py-0.5 rounded-full bg-cyanFocus/10 text-cyanFocus font-semibold border border-cyanFocus/30">v1.1.0</span>
         </div>
       </div>
 
       <div class="flex items-center space-x-4">
         <a href="#features" class="text-sm font-medium text-gray-400 hover:text-white transition hidden sm:inline-block">Features</a>
         <a href="#modes" class="text-sm font-medium text-gray-400 hover:text-white transition hidden sm:inline-block">Study Engines</a>
-        <a href="#install" class="text-sm font-medium text-gray-400 hover:text-white transition hidden sm:inline-block">Install</a>
-        <a href="/downloads/Timey-v1.0.0.apk" download
+        <a href="/release.html" class="text-sm font-medium text-dragon hover:underline transition hidden sm:inline-block">Release Notes</a>
+        <a href="/downloads/Timey-v1.1.0.apk" download
            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-dragon to-emerald-400 text-obsidian font-bold text-sm hover:opacity-95 transition shadow-lg shadow-dragon/25 flex items-center space-x-2">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-          <span>Download APK</span>
+          <span>Download APK (v1.1.0)</span>
         </a>
       </div>
     </div>
@@ -86,30 +80,30 @@
   <main class="flex-grow">
     <section class="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
       <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-surfaceVar border border-dragon/25 text-dragon text-xs font-semibold uppercase tracking-wider mb-6">
-        <span>⚡ Built with Kotlin 2.0 & Jetpack Compose</span>
+        <span>⚡ Built with Kotlin 2.0 & Room Database</span>
         <span class="text-gray-500">•</span>
         <span>100% Offline & Private</span>
       </div>
 
       <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
         The Science-Backed <br class="hidden sm:inline"/>
-        <span class="bg-gradient-to-r from-dragon via-dragonLight to-fiery bg-clip-text text-transparent">Pomodoro & Study Companion</span>
+        <span class="bg-gradient-to-r from-dragon via-dragonLight to-fiery bg-clip-text text-transparent">Pomodoro & Deep Work Engine</span>
       </h1>
 
       <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Say goodbye to background timer freezes and boring alarms. Experience zero-drift hardware timing, 4 adaptive focus modes, and level up your virtual Komodo companion as you study.
+        Say goodbye to background timer freezes and silent missed alarms. Experience zero-drift hardware timing, the new 135:15 Deep Work cycle, native app blocking, offline ambient soundscapes, and persistent Room analytics.
       </p>
 
       <!-- Primary Action CTA -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-        <a href="/downloads/Timey-v1.0.0.apk" download
+        <a href="/downloads/Timey-v1.1.0.apk" download
            class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-dragon via-emerald-400 to-fiery text-obsidian font-extrabold text-base hover:scale-[1.02] active:scale-[0.98] transition shadow-xl shadow-dragon/30 flex items-center justify-center space-x-3">
           <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-          <span>Download Free APK (v1.0.0)</span>
+          <span>Download Timey v1.1.0 APK</span>
         </a>
-        <a href="#modes"
+        <a href="/release.html"
            class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/40 text-gray-200 font-semibold text-base transition flex items-center justify-center space-x-2">
-          <span>Explore 4 Study Modes</span>
+          <span>View Release Notes</span>
           <span>→</span>
         </a>
       </div>
@@ -122,65 +116,72 @@
             <div class="text-left">
               <div class="text-sm font-bold text-white flex items-center gap-1.5">
                 <span>Timey Companion</span>
-                <span class="text-xs text-cyanFocus font-mono">Lv. 2</span>
+                <span class="text-xs text-cyanFocus font-mono">Lv. 3</span>
               </div>
-              <div class="text-xs text-gray-400 font-mono">140 XP • Road Explorer</div>
+              <div class="text-xs text-gray-400">Dragon Guardian • 🔥 5 Days</div>
             </div>
           </div>
-          <span class="px-3 py-1 rounded-full bg-cyanFocus/15 text-cyanFocus font-mono text-xs font-bold border border-cyanFocus/30">FOCUS BLOCK</span>
+          <span class="px-3 py-1 rounded-full bg-cyanFocus/15 text-cyanFocus font-mono text-xs font-bold border border-cyanFocus/30">135:15 DEEP FOCUS</span>
         </div>
 
         <!-- Timer Circle Mockup -->
         <div class="py-6 flex flex-col items-center justify-center">
           <div class="w-48 h-48 rounded-full border-4 border-surfaceVar border-t-dragon border-r-dragon border-b-fiery flex flex-col items-center justify-center relative">
             <span class="text-xs font-medium text-dragon uppercase tracking-wider mb-1">Mathematics</span>
-            <span class="text-4xl font-bold font-mono text-white">24:58</span>
-            <span class="text-xs text-gray-400 mt-1">Calculus & Integrals</span>
+            <span class="text-4xl font-bold font-mono text-white">134:20</span>
+            <span class="text-xs text-gray-400 mt-1">Advanced Topology</span>
           </div>
         </div>
 
         <div class="flex items-center justify-center space-x-4 mt-4">
           <div class="w-12 h-12 rounded-full bg-surfaceVar flex items-center justify-center text-gray-400">↺</div>
           <div class="w-16 h-16 rounded-full bg-dragon flex items-center justify-center text-obsidian text-2xl font-bold shadow-lg shadow-dragon/30">⏸</div>
-          <div class="w-12 h-12 rounded-full bg-surfaceVar flex items-center justify-center text-white font-bold text-xs">+5m</div>
+          <div class="w-12 h-12 rounded-full bg-surfaceVar flex items-center justify-center text-white font-bold text-xs">⏭ Skip</div>
         </div>
       </div>
     </section>
 
-    <!-- 4 Adaptive Focus Modes -->
+    <!-- Study Engines -->
     <section id="modes" class="max-w-5xl mx-auto px-6 py-20 border-t border-surfaceVar">
       <div class="text-center mb-14">
-        <h2 class="text-3xl font-extrabold text-white mb-3">4 Science-Backed Study Engines</h2>
-        <p class="text-gray-400 max-w-xl mx-auto">Different cognitive tasks require different intervals. Timey adapts to your natural flow state.</p>
+        <h2 class="text-3xl font-extrabold text-white mb-3">5 Science-Backed Focus Engines</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">Different cognitive tasks demand different work rhythms. Timey provides precision engines for every study style.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Mode 1 -->
         <div class="p-6 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/30 transition">
-          <div class="text-2xl mb-3">🍅</div>
-          <h3 class="text-lg font-bold text-white mb-2">Classic Pomodoro (25/5)</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">The golden standard. 25 minutes of laser-focused work paired with 5-minute recovery intervals and an automatic 15-minute long break every 4 cycles.</p>
+          <div class="text-2xl mb-3">🐉</div>
+          <h3 class="text-lg font-bold text-white mb-2">135:15 Deep Work</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Engineered for intense technical deep work. 135 minutes of uninterrupted focus followed by a 15-minute recovery interval.</p>
         </div>
 
         <!-- Mode 2 -->
         <div class="p-6 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/30 transition">
-          <div class="text-2xl mb-3">🧠</div>
-          <h3 class="text-lg font-bold text-white mb-2">Ultradian Deep Work (50/10)</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">Engineered for complex academic subjects, coding, and mathematical proofs that need 15+ minutes just to reach peak flow. Full 10-minute cognitive reset.</p>
+          <div class="text-2xl mb-3">🍅</div>
+          <h3 class="text-lg font-bold text-white mb-2">Classic Pomodoro (25/5)</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">The golden standard. 25 minutes of focus with 5-minute recovery sprints and automated 15-minute deep recovery every 4 cycles.</p>
         </div>
 
         <!-- Mode 3 -->
         <div class="p-6 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/30 transition">
-          <div class="text-2xl mb-3">🌊</div>
-          <h3 class="text-lg font-bold text-white mb-2">Flowmodoro (Dynamic Ratio)</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">Never get interrupted by an alarm when deep in thought. Count up unconstrained. When your flow naturally pauses, your break is automatically calculated (1:5 ratio).</p>
+          <div class="text-2xl mb-3">🧠</div>
+          <h3 class="text-lg font-bold text-white mb-2">Ultradian Sprint (50/10)</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Matches natural human 90-minute ultradian rhythm cycles for computer science, engineering, and writing blocks.</p>
         </div>
 
         <!-- Mode 4 -->
         <div class="p-6 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/30 transition">
+          <div class="text-2xl mb-3">🌊</div>
+          <h3 class="text-lg font-bold text-white mb-2">Flowmodoro</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Unconstrained count-up flow. When your focus session naturally pauses, your recovery break is calculated using an automated 1:5 ratio.</p>
+        </div>
+
+        <!-- Mode 5 -->
+        <div class="p-6 rounded-2xl bg-surface border border-surfaceVar hover:border-dragon/30 transition md:col-span-2">
           <div class="text-2xl mb-3">📝</div>
-          <h3 class="text-lg font-bold text-white mb-2">Strict Exam Simulator</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">Simulate real examination conditions. Disables pause, rings halfway and 5-minute warnings, and penalizes leaving the app with distraction flags.</p>
+          <h3 class="text-lg font-bold text-white mb-2">Exam Simulator & Open Focus</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Strict continuous exam hall countdown with midway warnings, no pause allowance, and open-ended stopwatch focus.</p>
         </div>
       </div>
     </section>
@@ -188,43 +189,43 @@
     <!-- Engineering Reliability -->
     <section id="features" class="max-w-5xl mx-auto px-6 py-20 border-t border-surfaceVar">
       <div class="text-center mb-14">
-        <h2 class="text-3xl font-extrabold text-white mb-3">Engineered to Never Freeze or Drift</h2>
-        <p class="text-gray-400 max-w-xl mx-auto">Android battery managers aggressively kill timers. Timey solves this with a dual hardware bridge.</p>
+        <h2 class="text-3xl font-extrabold text-white mb-3">Engineered to Never Die & Never Mute</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">Android battery killers and Doze mode ruin normal timers. Timey guarantees rock-solid reliability.</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <div class="p-6 rounded-2xl glass text-center">
-          <div class="text-3xl mb-3">🔔</div>
-          <h4 class="font-bold text-white mb-2">Android 14 Foreground Service</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Persistent notification with live countdown and interactive [Pause], [Resume], and [+5m] actions directly from your lockscreen.</p>
+          <div class="text-3xl mb-3">🔊</div>
+          <h4 class="font-bold text-white mb-2">Guaranteed Audible Ringing</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">AlarmRingingService fires on the USAGE_ALARM audio stream with full-screen heads-up display and continuous vibration, overriding notification silence.</p>
         </div>
         <div class="p-6 rounded-2xl glass text-center">
           <div class="text-3xl mb-3">⏰</div>
           <h4 class="font-bold text-white mb-2">Hardware RTC Wakeup</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Uses AlarmManager.setAlarmClock() which wakes the CPU at the exact target millisecond, bypassing Doze mode and OEM battery optimizers.</p>
+          <p class="text-xs text-gray-400 leading-relaxed">Uses AlarmManager.setAlarmClock() which wakes the CPU at the exact target millisecond, completely bypassing Doze mode and OEM battery optimizers.</p>
         </div>
         <div class="p-6 rounded-2xl glass text-center">
           <div class="text-3xl mb-3">🛡️</div>
-          <h4 class="font-bold text-white mb-2">Strict Anti-Distraction</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Leaving the app during focus blocks triggers an urgent 10-second grace countdown before recording an abandoned distraction mark.</p>
+          <h4 class="font-bold text-white mb-2">Focus Shield & App Blocker</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">AccessibilityService intercept immediately halts attempts to launch distracting apps (TikTok, Instagram, YouTube, etc.) with PIN lock security.</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="p-6 rounded-2xl glass text-center">
-          <div class="text-3xl mb-3">🎵</div>
-          <h4 class="font-bold text-white mb-2">Custom User Audio & Chimes</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Import your own personal .mp3, .wav, or .m4a files as completion alarms, or choose from synthesized Zen Temple Bells, Gentle Arpeggios, and Pulse beeps with volume control.</p>
+          <div class="text-3xl mb-3">🎧</div>
+          <h4 class="font-bold text-white mb-2">7 Procedural Soundscapes</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">Zero-asset offline PCM audio: Rain, Forest Birds, 10Hz Binaural Alpha Waves, Brown Noise, White Noise, Campfire, and personal MP3 playlist manager.</p>
         </div>
         <div class="p-6 rounded-2xl glass text-center">
-          <div class="text-3xl mb-3">🌓</div>
-          <h4 class="font-bold text-white mb-2">Soft Dark, Light & System Themes</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Engineered with soothing pastel mint, warm honey, and calm slate. Seamlessly switch between System Default, Soft Light, and Calm Dark modes.</p>
+          <div class="text-3xl mb-3">📊</div>
+          <h4 class="font-bold text-white mb-2">Room Database Analytics</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">Persistent local database tracks focus sessions, study streaks, 7-day Canvas weekly charts, and subject breakdown without external cloud tracking.</p>
         </div>
         <div class="p-6 rounded-2xl glass text-center">
-          <div class="text-3xl mb-3">📱</div>
-          <h4 class="font-bold text-white mb-2">Fully Responsive Architecture</h4>
-          <p class="text-xs text-gray-400 leading-relaxed">Adapts intelligently across all screen sizes with auto-scaling timer rings, compact phone ergonomics, and a balanced 2-column landscape/tablet desk clock.</p>
+          <div class="text-3xl mb-3">🧘</div>
+          <h4 class="font-bold text-white mb-2">Fullscreen Immersive Mode</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">Hides Android system bars with WindowInsetsControllerCompat. Minimalist typography, ambient rotating quotes, and accidental termination protection.</p>
         </div>
       </div>
     </section>
@@ -240,9 +241,9 @@
         <div class="p-5 rounded-2xl bg-surface border border-surfaceVar">
           <h4 class="font-bold text-white text-sm mb-1">Option 1: Direct Android Install (Easiest)</h4>
           <p class="text-xs text-gray-400 mb-3">Tap the button below directly on your Android phone to download and install.</p>
-          <a href="/downloads/Timey-v1.0.0.apk" download
+          <a href="/downloads/Timey-v1.1.0.apk" download
              class="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-dragon text-obsidian font-bold text-xs hover:opacity-90 transition">
-            <span>Download Timey-v1.0.0.apk</span>
+            <span>Download Timey-v1.1.0.apk (12 MB)</span>
           </a>
         </div>
 
@@ -250,14 +251,14 @@
           <h4 class="font-bold text-white text-sm font-sans mb-1">Option 2: Termux Command</h4>
           <p class="text-gray-400 font-sans mb-2">Install directly in Termux terminal:</p>
           <div class="bg-obsidian p-3 rounded-lg text-dragon overflow-x-auto">
-            curl -O https://timey-focus.vercel.app/downloads/Timey-v1.0.0.apk && termux-open Timey-v1.0.0.apk
+            curl -O https://timey-focus.vercel.app/downloads/Timey-v1.1.0.apk && termux-open Timey-v1.1.0.apk
           </div>
         </div>
 
         <div class="p-5 rounded-2xl bg-surface border border-surfaceVar font-mono text-xs">
           <h4 class="font-bold text-white text-sm font-sans mb-1">Option 3: ADB Command</h4>
           <div class="bg-obsidian p-3 rounded-lg text-dragon overflow-x-auto">
-            adb install -r Timey-v1.0.0.apk
+            adb install -r Timey-v1.1.0.apk
           </div>
         </div>
       </div>
@@ -265,9 +266,15 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-surfaceVar py-8 text-center text-xs text-gray-500">
-    <p>Timey • Open-source, private, and 100% offline study timer for Android.</p>
-    <p class="mt-1">Released under the MIT License.</p>
+  <footer class="border-t border-surfaceVar/60 bg-surface/50 py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+      <p>© 2026 Timey Open-Source Focus Engine. Released under the MIT License.</p>
+      <div class="flex items-center space-x-4">
+        <a href="/release.html" class="hover:text-gray-300 transition">Release Notes</a>
+        <a href="https://github.com/contactaurawealth-lab/Timey" class="hover:text-gray-300 transition">GitHub</a>
+        <a href="/downloads/Timey-v1.1.0.apk" class="hover:text-gray-300 transition">APK Download</a>
+      </div>
+    </div>
   </footer>
 
 </body>

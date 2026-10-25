@@ -65,7 +65,7 @@ class FocusForegroundService : Service() {
             ACTION_STOP_TIMER -> stopTimer()
         }
 
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
     private fun startTimer(totalSeconds: Int, sessionTitle: String) {
@@ -181,12 +181,22 @@ class FocusForegroundService : Service() {
     }
 
     private fun onTimerFinished() {
+        val totalSec = _serviceTimerState.value.totalSeconds
+        val title = currentTitle
         _serviceTimerState.value = _serviceTimerState.value.copy(
             isRunning = false,
             isPaused = false,
             remainingSeconds = 0
         )
         BlockerManager.updateSessionState(false, "", 0)
+
+        // Trigger continuous audible alarm & vibration so timer NEVER finishes silently
+        com.timey.app.core.alarm.AlarmRingingService.startRinging(
+            this,
+            title,
+            (totalSec / 60).coerceAtLeast(1)
+        )
+
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -295,7 +305,7 @@ class FocusForegroundService : Service() {
                 PowerManager.PARTIAL_WAKE_LOCK,
                 "Timey:TimerWakeLock"
             )?.apply {
-                acquire(4 * 60 * 60 * 1000L) // 4 hours maximum
+                acquire(8 * 60 * 60 * 1000L) // 8 hours maximum to cover 135m + cycles
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to acquire wake lock: ${e.message}")
