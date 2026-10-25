@@ -7,45 +7,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import com.timey.app.domain.model.ThemeMode
 
-private val SoftDarkColorScheme = darkColorScheme(
-    primary = DarkPrimary,
-    onPrimary = DarkBg,
-    primaryContainer = DarkSurfaceVariant,
-    onPrimaryContainer = DarkPrimary,
-    secondary = DarkSecondary,
-    onSecondary = DarkBg,
-    tertiary = DarkTertiary,
-    background = DarkBg,
-    onBackground = DarkTextPrimary,
-    surface = DarkSurface,
-    onSurface = DarkTextPrimary,
-    surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = DarkTextSecondary,
-    outline = DarkBorder,
-    error = SoftWarning
-)
-
-private val SoftLightColorScheme = lightColorScheme(
-    primary = LightPrimary,
-    onPrimary = LightSurface,
-    primaryContainer = LightSurfaceVariant,
-    onPrimaryContainer = LightPrimary,
-    secondary = LightSecondary,
-    onSecondary = LightSurface,
-    tertiary = LightTertiary,
-    background = LightBg,
-    onBackground = LightTextPrimary,
-    surface = LightSurface,
-    onSurface = LightTextPrimary,
-    surfaceVariant = LightSurfaceVariant,
-    onSurfaceVariant = LightTextSecondary,
-    outline = LightBorder,
-    error = SoftWarning
-)
-
 @Composable
 fun TimeyTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
+    accentIndex: Int = 0,
     content: @Composable () -> Unit
 ) {
     val isDark = when (themeMode) {
@@ -54,7 +19,45 @@ fun TimeyTheme(
         ThemeMode.LIGHT -> false
     }
 
-    val colorScheme = if (isDark) SoftDarkColorScheme else SoftLightColorScheme
+    val palette = AccentPalettes.getOrElse(accentIndex) { AccentPalettes[0] }
+
+    val darkScheme = darkColorScheme(
+        primary = palette.darkPrimary,
+        onPrimary = DarkBg,
+        primaryContainer = DarkSurfaceVariant,
+        onPrimaryContainer = palette.darkPrimary,
+        secondary = palette.darkSecondary,
+        onSecondary = DarkBg,
+        tertiary = SoftSky,
+        background = DarkBg,
+        onBackground = DarkTextPrimary,
+        surface = DarkSurface,
+        onSurface = DarkTextPrimary,
+        surfaceVariant = DarkSurfaceVariant,
+        onSurfaceVariant = DarkTextSecondary,
+        outline = DarkBorder,
+        error = SoftWarning
+    )
+
+    val lightScheme = lightColorScheme(
+        primary = palette.lightPrimary,
+        onPrimary = LightSurface,
+        primaryContainer = LightSurfaceVariant,
+        onPrimaryContainer = palette.lightPrimary,
+        secondary = palette.lightSecondary,
+        onSecondary = LightSurface,
+        tertiary = SoftSky,
+        background = LightBg,
+        onBackground = LightTextPrimary,
+        surface = LightSurface,
+        onSurface = LightTextPrimary,
+        surfaceVariant = LightSurfaceVariant,
+        onSurfaceVariant = LightTextSecondary,
+        outline = LightBorder,
+        error = SoftWarning
+    )
+
+    val colorScheme = if (isDark) darkScheme else lightScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

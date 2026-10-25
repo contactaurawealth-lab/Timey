@@ -25,15 +25,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SettingsBrightness
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -42,24 +45,33 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
+import com.timey.app.core.audio.SoundscapePlayer
 import com.timey.app.core.ui.component.CircularTimerRing
 import com.timey.app.core.ui.component.KomodoRoadCard
 import com.timey.app.domain.model.PomodoroPhase
 import com.timey.app.domain.model.ThemeMode
 import com.timey.app.domain.model.TimerMode
+import com.timey.app.features.fullscreen.ui.FullscreenFocusScreen
 import com.timey.app.features.timer.viewmodel.TimerStatus
 import com.timey.app.features.timer.viewmodel.TimerViewModel
 import java.util.Locale
@@ -71,6 +83,19 @@ fun TimerMainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = MaterialTheme.colorScheme
+
+    // Fullscreen Immersive Mode View
+    if (uiState.isFullscreenFocus) {
+        FullscreenFocusScreen(
+            viewModel = viewModel,
+            onExitFullscreen = { viewModel.setFullscreenFocus(false) }
+        )
+        return
+    }
+
+    var showSubjectDialog by remember { mutableStateOf(false) }
+    var pinInputValue by remember { mutableStateOf("") }
+    var pinError by remember { mutableStateOf(false) }
 
     val isFocusPhase = uiState.pomodoroPhase == PomodoroPhase.FOCUS
     val isRunning = uiState.status == TimerStatus.RUNNING
@@ -129,7 +154,8 @@ fun TimerMainScreen(
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.clickable { showSubjectDialog = true }
                         ) {
                             Text(
                                 text = uiState.sessionSubject,
@@ -145,12 +171,22 @@ fun TimerMainScreen(
                                 color = colors.onSurface,
                                 letterSpacing = (-1).sp
                             )
-                            Text(
-                                text = uiState.sessionTopic,
-                                color = colors.onSurfaceVariant,
-                                fontSize = 12.sp,
-                                maxLines = 1
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = uiState.sessionTopic,
+                                    color = colors.onSurfaceVariant,
+                                    fontSize = 12.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit Topic",
+                                    tint = colors.onSurfaceVariant.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
                         }
                     }
 
@@ -160,7 +196,8 @@ fun TimerMainScreen(
                         isRunning = isRunning,
                         mode = uiState.mode,
                         onPlayPause = { if (isRunning) viewModel.pauseTimer() else viewModel.startTimer() },
-                        onReset = { viewModel.resetTimer() },
+                        onReset = { viewModel.requestResetTimer() },
+                        onSkip = { viewModel.skipCurrentPhase() },
                         onFlowBreak = { viewModel.finishFlowmodoroAndCalculateBreak() },
                         onCustomDuration = { viewModel.toggleCustomDurationDialog(true) }
                     )
@@ -178,6 +215,7 @@ fun TimerMainScreen(
                         themeMode = uiState.themeMode,
                         onCycleTheme = { viewModel.cycleThemeMode() },
                         onOpenCustomAlarm = { viewModel.toggleCustomAlarmDialog(true) },
+                        onEnterFullscreen = { viewModel.setFullscreenFocus(true) },
                         phase = uiState.pomodoroPhase
                     )
 
@@ -211,6 +249,7 @@ fun TimerMainScreen(
                     themeMode = uiState.themeMode,
                     onCycleTheme = { viewModel.cycleThemeMode() },
                     onOpenCustomAlarm = { viewModel.toggleCustomAlarmDialog(true) },
+                    onEnterFullscreen = { viewModel.setFullscreenFocus(true) },
                     phase = uiState.pomodoroPhase
                 )
 
@@ -250,7 +289,7 @@ fun TimerMainScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Return within ${uiState.distractionGraceSecondsRemaining}s or focus streak resets!",
+                                text = "Return within ${uiState.distractionGraceSecondsRemaining}s or focus block will be canceled!",
                                 color = colors.error,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold
@@ -271,7 +310,8 @@ fun TimerMainScreen(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.clickable { showSubjectDialog = true }
                     ) {
                         Text(
                             text = uiState.sessionSubject,
@@ -289,31 +329,45 @@ fun TimerMainScreen(
                             letterSpacing = (-1).sp
                         )
 
-                        Text(
-                            text = uiState.sessionTopic,
-                            color = colors.onSurfaceVariant,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                text = uiState.sessionTopic,
+                                color = colors.onSurfaceVariant,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Topic",
+                                tint = colors.onSurfaceVariant.copy(alpha = 0.6f),
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Controls Row
+                // Controls Row (Reset, Play/Pause, Skip, Custom Duration)
                 TimerControlsRow(
                     isRunning = isRunning,
                     mode = uiState.mode,
                     onPlayPause = { if (isRunning) viewModel.pauseTimer() else viewModel.startTimer() },
-                    onReset = { viewModel.resetTimer() },
+                    onReset = { viewModel.requestResetTimer() },
+                    onSkip = { viewModel.skipCurrentPhase() },
                     onFlowBreak = { viewModel.finishFlowmodoroAndCalculateBreak() },
                     onCustomDuration = { viewModel.toggleCustomDurationDialog(true) }
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // Custom Alarm & Sound Banner
+                // Custom Alarm Quick Card
                 CustomAlarmQuickCard(
                     alarmSoundTitle = uiState.customAudioTitle?.takeIf { uiState.alarmSound == com.timey.app.domain.model.AlarmSound.CUSTOM_USER_AUDIO } ?: uiState.alarmSound.title,
                     volumePercent = (uiState.alarmVolume * 100).toInt(),
@@ -323,6 +377,122 @@ fun TimerMainScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
+    }
+
+    // Accidental Termination Confirmation Dialog
+    if (uiState.showTerminationConfirmDialog) {
+        val elapsedMins = (uiState.elapsedSeconds / 60).coerceAtLeast(0)
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissTerminationConfirm() },
+            title = {
+                Text(
+                    text = "End Focus Session Early?",
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = "You have focused for $elapsedMins minutes. Quitting early will stop this focus block and log it as incomplete.",
+                        fontSize = 13.sp,
+                        color = colors.onSurfaceVariant
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.confirmTermination() },
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.error)
+                ) {
+                    Text("Stop & Reset", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissTerminationConfirm() }) {
+                    Text("Keep Focusing")
+                }
+            },
+            containerColor = colors.surface,
+            shape = RoundedCornerShape(20.dp)
+        )
+    }
+
+    // PIN Protection Early Termination Dialog
+    if (uiState.showTerminationPinDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.dismissTerminationConfirm()
+                pinInputValue = ""
+                pinError = false
+            },
+            title = {
+                Text(text = "Focus PIN Required", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Column {
+                    Text(
+                        text = "Session termination is protected by PIN lock. Enter your security PIN:",
+                        fontSize = 13.sp,
+                        color = colors.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = pinInputValue,
+                        onValueChange = {
+                            if (it.length <= 8) pinInputValue = it
+                            pinError = false
+                        },
+                        visualTransformation = PasswordVisualTransformation(),
+                        singleLine = true,
+                        isError = pinError,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    if (pinError) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Incorrect PIN",
+                            color = colors.error,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (viewModel.verifySecurityPin(pinInputValue)) {
+                            pinInputValue = ""
+                            pinError = false
+                            viewModel.confirmTermination()
+                        } else {
+                            pinError = true
+                        }
+                    }
+                ) {
+                    Text("Unlock & Stop")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.dismissTerminationConfirm()
+                    pinInputValue = ""
+                    pinError = false
+                }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    // Subject & Topic Selector Dialog
+    if (showSubjectDialog) {
+        SubjectSelectionDialog(
+            initialSubject = uiState.sessionSubject,
+            initialTopic = uiState.sessionTopic,
+            viewModel = viewModel,
+            onDismiss = { showSubjectDialog = false }
+        )
     }
 
     // Custom Alarm Dialog
@@ -393,6 +563,7 @@ fun TimerTopBar(
     themeMode: ThemeMode,
     onCycleTheme: () -> Unit,
     onOpenCustomAlarm: () -> Unit,
+    onEnterFullscreen: () -> Unit,
     phase: PomodoroPhase
 ) {
     val colors = MaterialTheme.colorScheme
@@ -433,6 +604,22 @@ fun TimerTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
+            // Fullscreen Mode Launcher
+            IconButton(
+                onClick = onEnterFullscreen,
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(CircleShape)
+                    .background(colors.surfaceVariant.copy(alpha = 0.6f))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Fullscreen,
+                    contentDescription = "Immersive Fullscreen",
+                    tint = colors.onSurface,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
             // Custom Alarm Shortcut
             IconButton(
                 onClick = onOpenCustomAlarm,
@@ -518,6 +705,7 @@ fun TimerControlsRow(
     mode: TimerMode,
     onPlayPause: () -> Unit,
     onReset: () -> Unit,
+    onSkip: () -> Unit,
     onFlowBreak: () -> Unit,
     onCustomDuration: () -> Unit
 ) {
@@ -527,11 +715,11 @@ fun TimerControlsRow(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Reset Button
+        // Reset / Stop Button
         IconButton(
             onClick = onReset,
             modifier = Modifier
-                .size(48.dp)
+                .size(46.dp)
                 .clip(CircleShape)
                 .background(colors.surfaceVariant)
         ) {
@@ -539,16 +727,16 @@ fun TimerControlsRow(
                 imageVector = Icons.Default.Refresh,
                 contentDescription = "Reset",
                 tint = colors.onSurfaceVariant,
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(18.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
         // Main Play / Pause Button
         Box(
             modifier = Modifier
-                .size(72.dp)
+                .size(68.dp)
                 .clip(CircleShape)
                 .background(if (isRunning) colors.secondary else colors.primary)
                 .clickable { onPlayPause() },
@@ -558,18 +746,36 @@ fun TimerControlsRow(
                 imageVector = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = if (isRunning) "Pause" else "Start",
                 tint = colors.onPrimary,
-                modifier = Modifier.size(38.dp)
+                modifier = Modifier.size(36.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(18.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
-        // Context Action Button
+        // Skip Phase Button
+        IconButton(
+            onClick = onSkip,
+            modifier = Modifier
+                .size(46.dp)
+                .clip(CircleShape)
+                .background(colors.surfaceVariant)
+        ) {
+            Icon(
+                imageVector = Icons.Default.SkipNext,
+                contentDescription = "Skip Phase",
+                tint = colors.onSurface,
+                modifier = Modifier.size(22.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Context Action Button (Custom Duration or Calculate Flow Break)
         if (mode == TimerMode.FLOWMODORO) {
             IconButton(
                 onClick = onFlowBreak,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(46.dp)
                     .clip(CircleShape)
                     .background(colors.tertiary.copy(alpha = 0.2f))
                     .border(1.dp, colors.tertiary, CircleShape)
@@ -578,14 +784,14 @@ fun TimerControlsRow(
                     imageVector = Icons.Default.Check,
                     contentDescription = "Calculate Break",
                     tint = colors.tertiary,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         } else {
             IconButton(
                 onClick = onCustomDuration,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(46.dp)
                     .clip(CircleShape)
                     .background(colors.surfaceVariant)
             ) {
@@ -593,7 +799,7 @@ fun TimerControlsRow(
                     imageVector = Icons.Default.Timer,
                     contentDescription = "Set Custom Duration",
                     tint = colors.onSurface,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }

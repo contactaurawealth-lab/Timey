@@ -7,24 +7,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.timey.app.core.ui.theme.TimeyTheme
-import com.timey.app.features.timer.ui.TimerMainScreen
 import com.timey.app.features.timer.viewmodel.TimerViewModel
 import com.timey.app.features.timer.viewmodel.TimerViewModelFactory
+import com.timey.app.navigation.MainAppScaffold
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var viewModel: TimerViewModel
 
     private val requestNotificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            // Notification permission result handled
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+            // Notification permission handled
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
             TimerViewModelFactory(applicationContext)
         )[TimerViewModel::class.java]
 
-        // Strict mode lifecycle monitoring
+        // Strict mode lifecycle observer
         lifecycle.addObserver(LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_STOP -> viewModel.onAppLeftForeground()
@@ -48,8 +48,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
-            TimeyTheme(themeMode = uiState.themeMode) {
-                TimerMainScreen(viewModel = viewModel)
+            TimeyTheme(
+                themeMode = uiState.themeMode,
+                accentIndex = uiState.accentColorIndex
+            ) {
+                MainAppScaffold(viewModel = viewModel)
             }
         }
     }

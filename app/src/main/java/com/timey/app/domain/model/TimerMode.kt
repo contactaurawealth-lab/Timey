@@ -10,6 +10,11 @@ enum class TimerMode(
         description = "Classic 25/5 rhythm for disciplined focus and steady cognitive recovery.",
         defaultMinutes = 25
     ),
+    DEEP_WORK_135(
+        title = "135:15 Cycle",
+        description = "Deep 135-minute immersive focus block followed by a 15-minute recovery break.",
+        defaultMinutes = 135
+    ),
     ULTRADIAN(
         title = "Ultradian (50/10)",
         description = "Deep 50-minute cognitive sprints matching natural human alertness cycles.",

@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Query packages to let user select apps to block -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 
     <application
         android:name=".TimeyApp"
@@ -30,10 +45,18 @@
             </intent-filter>
         </activity>
 
-        <!-- Foreground Service for 100% Uninterrupted Timer & Soundscapes -->
+        <!-- Blocker Overlay Activity displayed when an app is restricted during a session -->
+        <activity
+            android:name=".core.blocker.BlockerOverlayActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Timey" />
+
+        <!-- Foreground Service for Uninterrupted Timer & Soundscapes -->
         <service
             android:name=".core.service.FocusForegroundService"
-            android:foregroundServiceType="specialUse"
+            android:foregroundServiceType="specialUse|mediaPlayback"
             android:exported="false">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
@@ -52,11 +75,25 @@
             </intent-filter>
         </service>
 
+        <!-- Accessibility Service for App Blocking -->
+        <service
+            android:name=".core.blocker.FocusAccessibilityBlockerService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
         <!-- Alarm Receiver for Exact Completion Timing -->
         <receiver
-            android:name=".core.notification.TimerAlarmReceiver"
+            android:name=".core.alarm.AlarmBroadcastReceiver"
             android:exported="false">
             <intent-filter>
+                <action android:name="com.timey.app.ACTION_TIMER_EXPIRED" />
                 <action android:name="com.timey.app.ACTION_TIMER_COMPLETED" />
             </intent-filter>
         </receiver>

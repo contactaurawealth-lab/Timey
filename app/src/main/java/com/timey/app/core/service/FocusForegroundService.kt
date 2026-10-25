@@ -18,6 +18,7 @@ import androidx.core.app.ServiceCompat
 import com.timey.app.MainActivity
 import com.timey.app.R
 import com.timey.app.core.alarm.ExactAlarmScheduler
+import com.timey.app.core.blocker.BlockerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,7 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Android 14+ (API 34) Compliant Foreground Service for continuous timer execution.
+ * Android 14+ (API 34) Compliant Foreground Service for continuous timer execution & study audio.
  * Maintains wake lock and delivers real-time notifications with interactive actions.
  */
 class FocusForegroundService : Service() {
@@ -60,6 +61,7 @@ class FocusForegroundService : Service() {
             ACTION_PAUSE_TIMER -> pauseTimer()
             ACTION_RESUME_TIMER -> resumeTimer()
             ACTION_ADD_FIVE_MINUTES -> addFiveMinutes()
+            ACTION_SKIP_PHASE -> skipPhase()
             ACTION_STOP_TIMER -> stopTimer()
         }
 
@@ -77,23 +79,21 @@ class FocusForegroundService : Service() {
             sessionTitle = sessionTitle
         )
 
+        BlockerManager.updateSessionState(true, sessionTitle, totalSeconds)
+
         // Schedule exact hardware alarm for when timer expires
         val wallClockTarget = System.currentTimeMillis() + (totalSeconds * 1000L)
         exactAlarmScheduler.scheduleExactAlarm(wallClockTarget, sessionTitle, totalSeconds / 60)
 
-        // Start Foreground with Android 14 FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+        // Start Foreground with Android 14 Types
         val notification = buildTimerNotification(totalSeconds, isPaused = false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ServiceCompat.startForeground(
-                this,
-                NOTIFICATION_ID,
-                notification,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-                } else {
-                    0
-                }
-            )
+            val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            } else {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            }
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, serviceType)
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
@@ -112,6 +112,7 @@ class FocusForegroundService : Service() {
                 _serviceTimerState.value = _serviceTimerState.value.copy(
                     remainingSeconds = remainingSec
                 )
+                BlockerManager.updateSessionState(true, currentTitle, remainingSec)
 
                 if (remainingSec <= 0) {
                     onTimerFinished()
@@ -133,6 +134,7 @@ class FocusForegroundService : Service() {
             isRunning = false,
             isPaused = true
         )
+        BlockerManager.updateSessionState(false, currentTitle, remaining)
         updateNotification(remaining, isPaused = true)
     }
 
@@ -148,6 +150,7 @@ class FocusForegroundService : Service() {
             isRunning = true,
             isPaused = false
         )
+        BlockerManager.updateSessionState(true, currentTitle, remaining)
         startTicker()
     }
 
@@ -167,7 +170,14 @@ class FocusForegroundService : Service() {
             remainingSeconds = newRemaining,
             totalSeconds = newTotal
         )
+        BlockerManager.updateSessionState(_serviceTimerState.value.isRunning, currentTitle, newRemaining)
         updateNotification(newRemaining, _serviceTimerState.value.isPaused)
+    }
+
+    private fun skipPhase() {
+        targetEndRealtime = SystemClock.elapsedRealtime()
+        _serviceTimerState.value = _serviceTimerState.value.copy(remainingSeconds = 0)
+        onTimerFinished()
     }
 
     private fun onTimerFinished() {
@@ -176,6 +186,7 @@ class FocusForegroundService : Service() {
             isPaused = false,
             remainingSeconds = 0
         )
+        BlockerManager.updateSessionState(false, "", 0)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -184,6 +195,7 @@ class FocusForegroundService : Service() {
         timerTickerJob?.cancel()
         exactAlarmScheduler.cancelAlarm()
         _serviceTimerState.value = ServiceTimerState()
+        BlockerManager.updateSessionState(false, "", 0)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -192,7 +204,7 @@ class FocusForegroundService : Service() {
         val m = remainingSeconds / 60
         val s = remainingSeconds % 60
         val formattedTime = String.format("%02d:%02d", m, s)
-        val statusText = if (isPaused) "Paused • $formattedTime left" else "Focusing • $formattedTime left"
+        val statusText = if (isPaused) "Paused • $formattedTime remaining" else "Active • $formattedTime remaining"
 
         val openAppIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -230,23 +242,27 @@ class FocusForegroundService : Service() {
             this, 3, addFiveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val stopIntent = Intent(this, FocusForegroundService::class.java).apply {
-            action = ACTION_STOP_TIMER
+        val skipIntent = Intent(this, FocusForegroundService::class.java).apply {
+            action = ACTION_SKIP_PHASE
         }
-        val stopPending = PendingIntent.getService(
-            this, 4, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val skipPending = PendingIntent.getService(
+            this, 4, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
+        val totalSec = _serviceTimerState.value.totalSeconds.coerceAtLeast(1)
+        val elapsedSec = (totalSec - remainingSeconds).coerceIn(0, totalSec)
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_timer)
-            .setContentTitle(currentTitle)
+            .setContentTitle("⏱️ $currentTitle")
             .setContentText(statusText)
+            .setProgress(totalSec, elapsedSec, false)
             .setOngoing(!isPaused)
             .setOnlyAlertOnce(true)
             .setContentIntent(contentPendingIntent)
             .addAction(pauseResumeAction)
-            .addAction(R.drawable.ic_timer, "+5 Min", addFivePending)
-            .addAction(R.drawable.ic_skip, "Finish", stopPending)
+            .addAction(R.drawable.ic_timer, "+5m", addFivePending)
+            .addAction(R.drawable.ic_skip, "Skip", skipPending)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_PROGRESS)
             .build()
@@ -279,7 +295,6 @@ class FocusForegroundService : Service() {
                 PowerManager.PARTIAL_WAKE_LOCK,
                 "Timey:TimerWakeLock"
             )?.apply {
-                // Acquire with timeout to avoid permanent drain
                 acquire(4 * 60 * 60 * 1000L) // 4 hours maximum
             }
         } catch (e: Exception) {
@@ -307,6 +322,7 @@ class FocusForegroundService : Service() {
         const val ACTION_PAUSE_TIMER = "com.timey.app.ACTION_PAUSE_TIMER"
         const val ACTION_RESUME_TIMER = "com.timey.app.ACTION_RESUME_TIMER"
         const val ACTION_ADD_FIVE_MINUTES = "com.timey.app.ACTION_ADD_FIVE_MINUTES"
+        const val ACTION_SKIP_PHASE = "com.timey.app.ACTION_SKIP_PHASE"
         const val ACTION_STOP_TIMER = "com.timey.app.ACTION_STOP_TIMER"
 
         const val EXTRA_DURATION_SECONDS = "extra_duration_seconds"
@@ -341,6 +357,13 @@ class FocusForegroundService : Service() {
         fun resume(context: Context) {
             val intent = Intent(context, FocusForegroundService::class.java).apply {
                 action = ACTION_RESUME_TIMER
+            }
+            context.startService(intent)
+        }
+
+        fun skip(context: Context) {
+            val intent = Intent(context, FocusForegroundService::class.java).apply {
+                action = ACTION_SKIP_PHASE
             }
             context.startService(intent)
         }

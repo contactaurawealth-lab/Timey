@@ -2,4 +2,5 @@
     <string name="app_name">Timey</string>
     <string name="quick_tile_label">Timey Focus</string>
     <string name="quick_tile_desc">Toggle Pomodoro study session</string>
+    <string name="accessibility_service_description">Timey Focus Blocker monitors app launches during active focus sessions to block distracting apps you chose to restrict.</string>
 </resources>
